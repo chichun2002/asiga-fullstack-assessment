@@ -1,0 +1,44 @@
+services:
+  db:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d products_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: products_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_USER: admin
+      DB_PASSWORD: secret
+      DB_NAME: products_db
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
