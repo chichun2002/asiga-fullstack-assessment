@@ -68,6 +68,10 @@ export default function ProductList() {
         navigate(`/products/${productId}`);
     };
 
+    const handleCreateProduct= () => {
+        navigate(`/products/create`);
+    };
+
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
@@ -78,6 +82,12 @@ export default function ProductList() {
     return (
         <div className="product-container">
             <h1>Product List</h1>
+            <button
+                className="create-product-button"
+                onClick={handleCreateProduct}
+            >
+                + Add New Product
+            </button>
 
             <div className="sort-controls">
                 <span>Sort by:</span>
