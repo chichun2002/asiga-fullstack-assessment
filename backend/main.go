@@ -141,7 +141,7 @@ func GetProducts(ctx *gin.Context) {
 
 	db.Model(&Product{}).Count(&count)
 
-	result := db.Order(orderClause).Limit(limit).Offset(offset).Find(&products)
+	result := db.Model(&Product{}).Order(orderClause).Limit(limit).Offset(offset).Find(&products)
 	if result.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve products"})
 		return
@@ -238,7 +238,7 @@ func GetProductReviews(ctx *gin.Context) {
 
 	db.Model(&Review{}).Where("product_id = ?", product_id).Count(&count)
 
-	result := db.Where("product_id = ?", product_id).Order(orderClause).Limit(limit).Offset(offset).Find(&reviews)
+	result := db.Model(&Review{}).Where("product_id = ?", product_id).Order(orderClause).Limit(limit).Offset(offset).Find(&reviews)
 	if result.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve products"})
 		return
