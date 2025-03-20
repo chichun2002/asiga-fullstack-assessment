@@ -26,7 +26,7 @@ type SortOrder = "asc" | "desc"
 export default function ProductList() {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(12);
+    const [limit] = useState(12);
     const [search, setSearch] = useState("");
     const [searchInput, setSearchInput] = useState("");
     const [sortBy, setSortBy] = useState<SortField>("created_at");

@@ -1,0 +1,60 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: products_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d products_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up environment variables
+      run: |
+        echo "DB_HOST=localhost" >> $GITHUB_ENV
+        echo "DB_PORT=5432" >> $GITHUB_ENV
+        echo "DB_USER=admin" >> $GITHUB_ENV
+        echo "DB_PASSWORD=secret" >> $GITHUB_ENV
+        echo "DB_NAME=products_db" >> $GITHUB_ENV
+
+    - name: Build backend
+      run: docker-compose build backend
+
+    - name: Start backend
+      run: docker-compose up -d backend
+      env:
+        DB_HOST: localhost  # Connect to service's published port
+
+    - name: Wait for backend
+      run: |
+        for i in {1..10}; do
+          if curl -s http://localhost:8080/health >/dev/null; then
+            echo "Backend is ready!"
+            exit 0
+          fi
+          sleep 3
+        done
+        echo "Backend failed to start"
+        exit 1
+
+    - name: Run tests
+      run: docker-compose run --rm backend-tests
