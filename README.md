@@ -19,7 +19,7 @@ The system allows users to create, read, update, and delete products as well as 
 ### Backend
 - Go REST API using standard libraries
 - PostgreSQL database via GORM (Go Library for mangaing postgresql with plenty of documentation)
-- Docker containerization (allows for building from a single line)
+- Docker containerisation (allows for building from a single line)
 
 ### Data Model
 - **Products**: Main resource with name, description, price
