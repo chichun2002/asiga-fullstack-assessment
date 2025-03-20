@@ -1,0 +1,48 @@
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+      
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose up -d
+          # Give the services time to fully start
+          echo "Waiting for services to start..."
+          sleep 10  # Adjust this based on how long your services take to start
+      
+      - name: Check if API is ready
+        run: |
+          # Try to reach the API, retry a few times if it fails
+          max_retries=30
+          counter=0
+          until $(curl --output /dev/null --silent --fail http://localhost:8080/products); do
+            if [ ${counter} -eq ${max_retries} ]; then
+              echo "API failed to start within the allocated time."
+              docker-compose logs
+              exit 1
+            fi
+            printf '.'
+            counter=$((counter+1))
+            sleep 2
+          done
+          echo "API is ready!"
+      
+      - name: Run Go tests
+        run: |
+          cd backend  # Change this to the directory containing your test files
+          go test -v
+      
+      - name: Logs on failure
+        if: failure()
+        run: docker-compose logs
+      
+      - name: Tear down Docker Compose services
+        if: always()
+        run: docker-compose down
