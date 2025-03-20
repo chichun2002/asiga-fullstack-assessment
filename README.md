@@ -15,7 +15,6 @@ The system allows users to create, read, update, and delete products as well as 
 
 ### Frontend
 - React with TypeScript
-- API client for backend communication
 
 ### Backend
 - Go REST API using standard libraries
