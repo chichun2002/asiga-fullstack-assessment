@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetProducts(t *testing.T) {
-	resp, err := http.Get("http://localhost:8080/products")
+	resp, err := http.Get("http://backend:8080/products")
 	if err != nil {
 		t.Fatalf("Failed to make request: %v", err)
 	}

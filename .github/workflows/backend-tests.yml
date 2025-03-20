@@ -1,16 +1,17 @@
-name: Backend CI
+name: Backend Tests
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
-  backend-tests:
+  test:
     runs-on: ubuntu-latest
+    
     services:
-      db:
+      postgres:
         image: postgres:15-alpine
         env:
           POSTGRES_USER: admin
@@ -19,42 +20,63 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U admin -d products_db"
-          --health-interval 10s
+          --health-cmd pg_isready
+          --health-interval 5s
           --health-timeout 5s
           --health-retries 5
-
+    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up environment variables
-      run: |
-        echo "DB_HOST=localhost" >> $GITHUB_ENV
-        echo "DB_PORT=5432" >> $GITHUB_ENV
-        echo "DB_USER=admin" >> $GITHUB_ENV
-        echo "DB_PASSWORD=secret" >> $GITHUB_ENV
-        echo "DB_NAME=products_db" >> $GITHUB_ENV
-
-    - name: Build backend
-      run: docker compose build backend
-
-    - name: Start backend
-      run: docker compose up -d backend
-      env:
-        DB_HOST: localhost  # Connect to service's published port
-
-    - name: Wait for backend
-      run: |
-        for i in {1..10}; do
-          if curl -s http://localhost:8080/health >/dev/null; then
-            echo "Backend is ready!"
-            exit 0
-          fi
-          sleep 3
-        done
-        echo "Backend failed to start"
-        exit 1
-
-    - name: Run tests
-      run: docker compose run --rm backend-tests
+      - uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'  # Adjust to your Go version
+      
+      - name: Create env file
+        run: |
+          cd backend
+          # Create the env file from GitHub secrets or use defaults
+          cat > .env << EOF
+          DB_HOST=localhost
+          DB_PORT=5432
+          DB_USER=admin
+          DB_PASSWORD=secret
+          DB_NAME=products_db
+          # Add other environment variables from your local_dev.env
+          EOF
+      
+      - name: Install dependencies
+        run: cd backend && go mod download
+      
+      - name: Run backend server
+        run: cd backend && go run main.go &
+        env:
+          # Add any environment variables needed for the backend
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: admin
+          DB_PASSWORD: secret
+          DB_NAME: products_db
+      
+      - name: Wait for backend to start
+        run: |
+          # Wait for the backend to be ready
+          for i in {1..10}; do
+            if curl -s http://localhost:8080/health > /dev/null; then
+              echo "Backend is up!"
+              break
+            fi
+            echo "Waiting for backend..."
+            sleep 3
+          done
+      
+      - name: Run backend tests
+        run: cd backend && go test -v ./... -tags=integration
+        env:
+          # Add any environment variables needed for tests
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: admin
+          DB_PASSWORD: secret
+          DB_NAME: products_db
