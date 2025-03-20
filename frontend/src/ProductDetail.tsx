@@ -106,6 +106,7 @@ export default function ProductDetail() {
           <div className="product-detail-card">
             {!showEditForm ? (
               <>
+                {/* Details */}
                 <div className="product-header">
                   <h1>{product.name}</h1>
                   <button 
@@ -123,6 +124,7 @@ export default function ProductDetail() {
               </>
             ) : (
               <div className="edit-form-container">
+                {/* Edit Details */}
                 <h2>Edit Product</h2>
                 
                 {editError && <div className="error-message">{editError}</div>}

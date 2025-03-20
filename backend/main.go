@@ -23,6 +23,7 @@ type Review struct {
 	ProductID uint   `json:"product_id"`
 }
 
+// Setup Database connection and open api routes
 func main() {
 	// Connect to PostgreSQL
 	dsn := "host=" + os.Getenv("DB_HOST") +
@@ -31,7 +32,6 @@ func main() {
 		" dbname=" + os.Getenv("DB_NAME") +
 		" port=" + os.Getenv("DB_PORT") +
 		" sslmode=" + os.Getenv("DB_SSLMODE")
-	// dsn := "host=db user=admin password=secret dbname=products_db port=5432 sslmode=disable"
 	var err error
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

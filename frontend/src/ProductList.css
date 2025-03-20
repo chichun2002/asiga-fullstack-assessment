@@ -12,7 +12,6 @@
     color: #e0e0e0;
   }
   
-  /* Sorting controls */
   .sort-controls {
     display: flex;
     align-items: center;
@@ -46,7 +45,6 @@
     border-color: #4a90e2;
   }
   
-  /* Product grid with proper spacing */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -106,14 +104,13 @@
   }
   
   .no-products {
-    grid-column: 1 / -1; /* Span across all columns */
+    grid-column: 1 / -1;
     text-align: center;
     padding: 50px;
     color: #888888;
     font-size: 18px;
   }
   
-  /* Pagination controls */
   .pagination-controls {
     display: flex;
     justify-content: center;

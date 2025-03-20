@@ -32,7 +32,6 @@ export default function ProductList() {
     const [sortBy, setSortBy] = useState<SortField>("created_at");
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
-    // The explicit generic type parameters for useQuery are important
     const { data, isLoading, error, refetch } = useQuery<ProductResponse, Error>({
         queryKey: ["products", page, limit, sortBy, sortOrder, search],
         queryFn: async () => {
@@ -89,13 +88,12 @@ export default function ProductList() {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setSearch(searchInput);
-        setPage(1); // Reset to first page when searching
+        setPage(1);
     };
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
-    // Now TypeScript knows that data is of type ProductResponse
     const products = data?.products || [];
     const isEmpty = products.length === 0;
 
@@ -109,6 +107,7 @@ export default function ProductList() {
                 + Add New Product
             </button>
 
+            {/* Search Bar */}
             <form onSubmit={handleSearch} className="search-form">
                 <input
                     type="text"
@@ -135,6 +134,7 @@ export default function ProductList() {
                 )}
             </form>
 
+            {/* Sorting Options */}
             <div className="sort-controls">
                 <span>Sort by:</span>
                 <button
@@ -156,7 +156,8 @@ export default function ProductList() {
                     Date {getSortIcon("created_at")}
                 </button>
             </div>
-
+            
+            {/* Product Grid */}
             <div className="product-grid">
                 {!isEmpty ? (
                     products.map((product) => (
@@ -186,6 +187,7 @@ export default function ProductList() {
                 )}
             </div>
             
+            {/* Pagination controls for products */}
             {data?.pagination && (
                 <div className="pagination-controls">
                     <button

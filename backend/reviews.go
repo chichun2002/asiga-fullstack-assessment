@@ -17,6 +17,7 @@ type UpdateReviewRequest struct {
 	ProductID *uint   `json:"product_id"`
 }
 
+// Creates a review for a given product uses json for content and product_id
 func CreateReview(ctx *gin.Context) {
 	var input CreateReviewRequest
 
@@ -45,6 +46,7 @@ func CreateReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, review)
 }
 
+// Gets Reviews for a given product from ID by returning all affiliated reviews and returning them with paging
 func GetProductReviews(ctx *gin.Context) {
 	product_id := ctx.Param("id")
 	// Default values
@@ -109,6 +111,7 @@ func GetProductReviews(ctx *gin.Context) {
 	})
 }
 
+// Deletes a review given the ID parameter
 func DeleteReview(ctx *gin.Context) {
 	id := ctx.Param("id")
 
@@ -125,6 +128,7 @@ func DeleteReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Review deleted successfully"})
 }
 
+// Updates a review given the ID parameter uses json for content and product_id
 func UpdateReview(ctx *gin.Context) {
 	id := ctx.Param("id")
 

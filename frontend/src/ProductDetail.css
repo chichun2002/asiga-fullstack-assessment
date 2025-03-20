@@ -1,4 +1,4 @@
-product-detail-container {
+.product-detail-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
@@ -94,9 +94,9 @@ product-detail-container {
     border-radius: 6px;
     padding: 15px;
     border-left: 4px solid #4a90e2;
-    margin-bottom: 15px; /* Add spacing between review cards */
-    word-wrap: break-word; /* Ensures long words don't overflow */
-    overflow-wrap: break-word; /* Modern browsers */
+    margin-bottom: 15px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     min-width: 700px;
   }
 
@@ -104,9 +104,9 @@ product-detail-container {
     margin: 0 0 10px 0;
     font-size: 16px;
     line-height: 1.5;
-    white-space: pre-wrap; /* Preserves whitespace and line breaks */
-    word-break: break-word; /* Breaks words to prevent overflow */
-    max-width: 700px; /* Ensures content doesn't exceed the container */
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-width: 700px;
     text-align-last: left;
   }
   

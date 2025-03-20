@@ -17,6 +17,7 @@ type UpdateProductRequest struct {
 	Price *float64 `json:"price"`
 }
 
+// Creates a product assigning it the next avaliable id json body for name and price
 func CreateProduct(ctx *gin.Context) {
 	var input CreateProductRequest
 
@@ -39,6 +40,7 @@ func CreateProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, product)
 }
 
+// Returns a product given the id
 func GetProductByID(ctx *gin.Context) {
 	id := ctx.Param("id")
 
@@ -53,6 +55,7 @@ func GetProductByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, product)
 }
 
+// Gets Products from Databse Given Parameters including paging size, search filter and sorts
 func GetProducts(ctx *gin.Context) {
 	// Default values
 	limit := 10
@@ -129,6 +132,7 @@ func GetProducts(ctx *gin.Context) {
 	})
 }
 
+// Deletes Product from Database
 func DeleteProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 
@@ -145,6 +149,7 @@ func DeleteProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully"})
 }
 
+// Modifies Existing Product json body for name and price
 func UpdateProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 
