@@ -75,6 +75,10 @@ Manually Tested
 
 Having Trouble With Automated Testing in Docker
 
+- Running testing in its own container causes issues with github actions which I'm not really sure how to fix given the time
+- I have never done automated testing in go and would need more time to better understand how its done correctly
+- API was tested in console with curl commands
+
 ## Development Decisions/Assumptions
 
 - Backend, frontend, and database are all containerised in docker to allow for single line build and deployment
