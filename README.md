@@ -15,12 +15,11 @@ The system allows users to create, read, update, and delete products as well as 
 
 ### Frontend
 - React with TypeScript
-- API client for backend communication
 
 ### Backend
 - Go REST API using standard libraries
 - PostgreSQL database via GORM (Go Library for mangaing postgresql with plenty of documentation)
-- Docker containerization (allows for building from a single line)
+- Docker containerisation (allows for building from a single line)
 
 ### Data Model
 - **Products**: Main resource with name, description, price
@@ -39,7 +38,7 @@ The system allows users to create, read, update, and delete products as well as 
 The entire application can be started with a single command:
 
 ```bash
-docker compose up
+docker-compose up
 ```
 
 This will:
@@ -90,8 +89,9 @@ Having Trouble With Automated Testing in Docker
 - Add authentication, users and privileges
 - Implement more advanced filtering and search capabilities
 - Add image upload for products
+- Add rating system for reviews
 - Enhance test coverage/Fix autotests
 - Clean up CSS and separate the frontend into smaller components for readability
 
 ## Dev Comments
-- Working on a fullstack project like this from scratch is quite challenging trying to figure out how to setup all the environments and just getting a basic structure setup to work on. If I could start for scratch making sure testing was integrated and working from the start I would
+- Working on a fullstack project like this from scratch is quite challenging trying to figure out how to setup all the environments and just getting a basic structure setup to work on. If I could start for scratch I would make sure testing was integrated and working from the start
