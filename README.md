@@ -77,9 +77,9 @@ Having Trouble With Automated Testing in Docker
 
 ## Development Decisions/Assumptions
 
--Backend, frontend, and database are all containerized in docker to allow for single line build and deployment
--Go Backend uses GROM library, a ORM library for communicating with the postgresql database.
--Frontend uses Axios to make API calls
+- Backend, frontend, and database are all containerized in docker to allow for single line build and deployment
+- Go Backend uses GROM library, a ORM library for communicating with the postgresql database.
+- Frontend uses Axios to make API calls
 
 ## Future Improvements
 
