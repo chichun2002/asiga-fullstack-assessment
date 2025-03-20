@@ -37,8 +37,13 @@ The system allows users to create, read, update, and delete products as well as 
 
 The entire application can be started with a single command:
 
+Windows
 ```bash
 docker-compose up
+```
+Linux
+```bash
+docker compose up
 ```
 
 This will:
@@ -72,11 +77,13 @@ This will:
 
 Manually Tested
 
-Having Trouble With Automated Testing in Docker
+- Got GitHub actions working made some quick autotests which check for Product and Review Functionality further tests would need to be made for thorough testing
 
-- Running testing in its own container causes issues with github actions which I'm not really sure how to fix given the time
-- I have never done automated testing in go and would need more time to better understand how its done correctly
-- API was tested in console with curl commands
+### Testing Pipeline
+- `docker compose up -d`
+- `cd backend`
+- `go test -v`
+- `docker compose down`
 
 ## Development Decisions/Assumptions
 
