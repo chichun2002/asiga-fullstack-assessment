@@ -39,7 +39,7 @@ The system allows users to create, read, update, and delete products as well as 
 The entire application can be started with a single command:
 
 ```bash
-docker compose up
+docker-compose up
 ```
 
 This will:
