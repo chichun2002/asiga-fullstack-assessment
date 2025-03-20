@@ -1,3 +1,14 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  # Also add a manual trigger
+  workflow_dispatch:
+
+jobs:
   test:
     runs-on: ubuntu-latest
     
@@ -9,13 +20,13 @@
         uses: actions/setup-go@v4
         with:
           go-version: '1.24'
-      
+
       - name: Start services with Docker Compose
         run: |
           docker-compose up -d
           # Give the services time to fully start
           echo "Waiting for services to start..."
-          sleep 10  # Adjust this based on how long your services take to start
+          sleep 10 
       
       - name: Check if API is ready
         run: |
@@ -36,7 +47,7 @@
       
       - name: Run Go tests
         run: |
-          cd backend  # Change this to the directory containing your test files
+          cd backend
           go test -v
       
       - name: Logs on failure
