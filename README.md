@@ -89,6 +89,7 @@ Having Trouble With Automated Testing in Docker
 - Add authentication, users and privileges
 - Implement more advanced filtering and search capabilities
 - Add image upload for products
+- Add rating system for reviews
 - Enhance test coverage/Fix autotests
 - Clean up CSS and separate the frontend into smaller components for readability
 
