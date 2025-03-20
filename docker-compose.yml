@@ -20,11 +20,13 @@ services:
     build: ./backend
     ports:
       - "8080:8080"
-    environment:
-      DB_HOST: db
-      DB_USER: admin
-      DB_PASSWORD: secret
-      DB_NAME: products_db
+    env_file:
+      - local_dev.env
+    # environment:
+    #   DB_HOST: db
+    #   DB_USER: admin
+    #   DB_PASSWORD: secret
+    #   DB_NAME: products_db
     depends_on:
       db:
         condition: service_healthy

@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ProductDetail.css";
+import ProductReviews from "./ProductReviews";
 
 interface Product {
     ID: number;
@@ -12,38 +13,21 @@ interface Product {
     UpdatedAt: string;
 }
 
-interface Review {
-    ID: number;
-    content: string;
-    product_id: number;
-    CreatedAt: string;
-}
-
-interface ReviewResponse {
-    reviews: Review[];
-    pagination: {
-        total: number;
-        page: number;
-        limit: number;
-        pages: number;
-    };
-}
-
-interface AddReviewRequest {
-    content: string;
-    product_id: number;
+interface UpdateProductRequest {
+    name?: string;
+    price?: number;
 }
 
 export default function ProductDetail() {
     const { id } = useParams<{ id: string}>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const [reviewPage, setReviewPage] = useState(1);
-    const [reviewLimit] = useState(5); // Number of reviews per page
-
-    const [reviewContent, setReviewContent] = useState("");
-    const [showReviewForm, setShowReviewForm] = useState(false);
-    const [reviewError, setReviewError] = useState("");
+    
+    // Edit product state
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [editName, setEditName] = useState("");
+    const [editPrice, setEditPrice] = useState("");
+    const [editError, setEditError] = useState("");
 
     // Fetch Product
     const { data: product, isLoading: productLoading, error : productError } = useQuery({
@@ -54,62 +38,61 @@ export default function ProductDetail() {
         }
     });
 
-    // Fetch Reviews
-    const { data: reviewsData, isLoading: reviewsLoading, error: reviewsError} = useQuery({
-        queryKey: ["productReviews", id, reviewPage, reviewLimit],
-        queryFn: async () => {
-            const response = await axios.get<ReviewResponse>(`http://localhost:8080/products/${id}/reviews`,
-                {
-                    params: {
-                        page: reviewPage,
-                        limit: reviewLimit,
-                        sort: "created_at",
-                        order: "desc"
-                    }
-                }
-            );
-            return response.data;
-        },
-        enabled: !!id
-    });
-
-    const addReviewMutation = useMutation({
-        mutationFn: async (reviewData: AddReviewRequest) => {
-            const response = await axios.post("http://localhost:8080/reviews", reviewData);
+    const updateProductMutation = useMutation({
+        mutationFn: async (productData: UpdateProductRequest) => {
+            const response = await axios.patch(`http://localhost:8080/products/${id}`, productData);
             return response.data;
         },
         onSuccess: () => {
-            setReviewContent("");
-            setShowReviewForm(false);
-
-            queryClient.invalidateQueries({ queryKey: ["productReviews", id] });
+            setShowEditForm(false);
+            setEditError("");
+            // Invalidate product data to refresh UI
+            queryClient.invalidateQueries({ queryKey: ["product", id] });
         },
         onError: (err: Error) => {
-            setReviewError(`Failed to add review': ${err.message}`)
+            setEditError(`Failed to update product: ${err.message}`);
         }
     });
 
-    const handleSubmitReview = (e: React.FormEvent) => {
+    const handleEditProduct = (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!reviewContent.trim()) {
-            setReviewError("Review content is required");
+        
+        if (!editName.trim() && !editPrice.trim()) {
+            setEditError("At least one field must be modified");
             return;
         }
-        setReviewError("");
 
-        addReviewMutation.mutate({
-            content: reviewContent.trim(),
-            product_id: parseInt(id || "0", 10)
-        });
+        const updateData: UpdateProductRequest = {};
+        
+        if (editName.trim()) {
+            updateData.name = editName.trim();
+        }
+        
+        if (editPrice.trim()) {
+            const priceValue = parseFloat(editPrice);
+            if (isNaN(priceValue) || priceValue <= 0) {
+                setEditError("Price must be a positive number");
+                return;
+            }
+            updateData.price = priceValue;
+        }
+        
+        setEditError("");
+        updateProductMutation.mutate(updateData);
     };
+
+    // Initialize edit form values when product data is loaded
+    const handleShowEditForm = useCallback(() => {
+        if (product) {
+            setEditName(product.name);
+            setEditPrice(product.price.toString());
+            setShowEditForm(true);
+        }
+    }, [product]);
 
     if (productLoading) return <div>Loading product details...</div>;
     if (productError ) return <div>Error: {(productError  as Error).message}</div>;
     if (!product) return <div>Product not found</div>
-
-    const reviews = reviewsData?.reviews || [];
-    const pagination = reviewsData?.pagination;
 
     return (
         <div className="product-detail-container">
@@ -121,120 +104,88 @@ export default function ProductDetail() {
           </button>
           
           <div className="product-detail-card">
-            <h1>{product.name}</h1>
-            <div className="product-meta">
-              <span className="product-id">Product ID: {product.ID}</span>
-              <span className="product-price">${product.price.toFixed(2)}</span>
-            </div>
+            {!showEditForm ? (
+              <>
+                <div className="product-header">
+                  <h1>{product.name}</h1>
+                  <button 
+                    className="edit-product-button"
+                    onClick={handleShowEditForm}
+                  >
+                    Edit Product
+                  </button>
+                </div>
+                
+                <div className="product-meta">
+                  <span className="product-id">Product ID: {product.ID}</span>
+                  <span className="product-price">${product.price.toFixed(2)}</span>
+                </div>
+              </>
+            ) : (
+              <div className="edit-form-container">
+                <h2>Edit Product</h2>
+                
+                {editError && <div className="error-message">{editError}</div>}
+                
+                <form onSubmit={handleEditProduct}>
+                  <div className="form-group">
+                    <label htmlFor="product-name">Name</label>
+                    <input
+                      id="product-name"
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      placeholder="Product name"
+                      disabled={updateProductMutation.isPending}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="product-price">Price</label>
+                    <input
+                      id="product-price"
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(e.target.value)}
+                      placeholder="Product price"
+                      disabled={updateProductMutation.isPending}
+                    />
+                  </div>
+                  
+                  <div className="form-actions">
+                    <button
+                      type="button"
+                      className="cancel-button"
+                      onClick={() => {
+                        setShowEditForm(false);
+                        setEditError("");
+                      }}
+                      disabled={updateProductMutation.isPending}
+                    >
+                      Cancel
+                    </button>
+                    
+                    <button
+                      type="submit"
+                      className="submit-button"
+                      disabled={updateProductMutation.isPending}
+                    >
+                      {updateProductMutation.isPending ? "Updating..." : "Update Product"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
             
             <div className="product-dates">
               <p>Added on: {new Date(product.CreatedAt).toLocaleDateString()}</p>
               <p>Last updated: {new Date(product.UpdatedAt).toLocaleDateString()}</p>
             </div>
             
-            <div className="reviews-section">
-              <div className="reviews-header">
-                <h2>Customer Reviews</h2>
-                {!showReviewForm && (
-                  <button 
-                    className="add-review-button"
-                    onClick={() => setShowReviewForm(true)}
-                  >
-                    + Add Review
-                  </button>
-                )}
-              </div>
-              
-              {/* Inline Review Form */}
-              {showReviewForm && (
-                <div className="review-form-container">
-                  <h3>Write a Review</h3>
-                  
-                  {reviewError && <div className="error-message">{reviewError}</div>}
-                  
-                  <form onSubmit={handleSubmitReview}>
-                    <div className="form-group">
-                      <textarea
-                        value={reviewContent}
-                        onChange={(e) => setReviewContent(e.target.value)}
-                        placeholder="Write your review here..."
-                        rows={4}
-                        disabled={addReviewMutation.isPending}
-                      />
-                    </div>
-                    
-                    <div className="form-actions">
-                      <button
-                        type="button"
-                        className="cancel-button"
-                        onClick={() => {
-                          setShowReviewForm(false);
-                          setReviewError("");
-                        }}
-                        disabled={addReviewMutation.isPending}
-                      >
-                        Cancel
-                      </button>
-                      
-                      <button
-                        type="submit"
-                        className="submit-button"
-                        disabled={addReviewMutation.isPending}
-                      >
-                        {addReviewMutation.isPending ? "Submitting..." : "Submit Review"}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              )}
-              
-              {/* Reviews List */}
-              {reviewsLoading && !reviewsData ? (
-                <div className="loading-reviews">Loading reviews...</div>
-              ) : reviewsError ? (
-                <div className="error">Error loading reviews: {(reviewsError as Error).message}</div>
-              ) : reviews.length > 0 ? (
-                <>
-                  <div className="reviews-list">
-                    {reviews.map(review => (
-                      <div className="review-card" key={review.ID}>
-                        <p className="review-content">{review.content}</p>
-                        <p className="review-date">
-                          Posted on {new Date(review.CreatedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Pagination controls for reviews */}
-                  {pagination && pagination.pages > 1 && (
-                    <div className="reviews-pagination">
-                      <button
-                        onClick={() => setReviewPage(p => Math.max(p - 1, 1))}
-                        disabled={reviewPage === 1 || reviewsLoading}
-                        className="page-button small"
-                      >
-                        Previous
-                      </button>
-                      
-                      <span className="page-info">
-                        Page {pagination.page} of {pagination.pages}
-                      </span>
-                      
-                      <button
-                        onClick={() => setReviewPage(p => Math.min(p + 1, pagination.pages))}
-                        disabled={reviewPage >= pagination.pages || reviewsLoading}
-                        className="page-button small"
-                      >
-                        Next
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <p className="no-reviews">No reviews yet for this product.</p>
-              )}
-            </div>
+            {/* Render the Reviews component */}
+            <ProductReviews productId={id || ""} />
           </div>
         </div>
     );

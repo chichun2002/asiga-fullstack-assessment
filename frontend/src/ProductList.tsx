@@ -27,20 +27,23 @@ export default function ProductList() {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(12);
+    const [search, setSearch] = useState("");
+    const [searchInput, setSearchInput] = useState("");
     const [sortBy, setSortBy] = useState<SortField>("created_at");
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
     // The explicit generic type parameters for useQuery are important
-    const { data, isLoading, error } = useQuery<ProductResponse, Error>({
-        queryKey: ["products", page, limit, sortBy, sortOrder],
+    const { data, isLoading, error, refetch } = useQuery<ProductResponse, Error>({
+        queryKey: ["products", page, limit, sortBy, sortOrder, search],
         queryFn: async () => {
-            console.log("Fetching with params:", { page, limit, sort: sortBy, order: sortOrder });
+            console.log("Fetching with params:", { page, limit, sort: sortBy, order: sortOrder, search: search });
             const response = await axios.get<ProductResponse>("http://localhost:8080/products", {
                 params: {
                     page,
                     limit,
                     sort: sortBy,
-                    order: sortOrder
+                    order: sortOrder,
+                    search: search,
                 }
             });
             return response.data;
@@ -67,9 +70,26 @@ export default function ProductList() {
     const handleViewDetails = (productId: number) => {
         navigate(`/products/${productId}`);
     };
-
+    
     const handleCreateProduct= () => {
         navigate(`/products/create`);
+    };
+
+    const handleDeleteProduct = (productId: number) => {
+        axios
+            .delete(`http://localhost:8080/products/${productId}`)
+            .then(() => {
+                refetch();
+            })
+            .catch((error) => {
+                console.error(error)
+            });
+    };
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setSearch(searchInput);
+        setPage(1); // Reset to first page when searching
     };
 
     if (isLoading) return <div>Loading...</div>;
@@ -88,6 +108,32 @@ export default function ProductList() {
             >
                 + Add New Product
             </button>
+
+            <form onSubmit={handleSearch} className="search-form">
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    className="search-input"
+                />
+                <button type="submit" className="search-button">
+                    Search
+                </button>
+                {search && (
+                    <button 
+                        type="button" 
+                        className="clear-search-button"
+                        onClick={() => {
+                            setSearchInput("");
+                            setSearch("");
+                            setPage(1);
+                        }}
+                    >
+                        Clear
+                    </button>
+                )}
+            </form>
 
             <div className="sort-controls">
                 <span>Sort by:</span>
@@ -116,6 +162,16 @@ export default function ProductList() {
                     products.map((product) => (
                         <div key={`product-${product.ID}`} className="product-card">
                             <h3>{product.name}</h3>
+                            <button
+                                onClick={() => handleDeleteProduct(product.ID)}
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px',
+                                }}
+                            >
+                                X
+                            </button>
                             <p className="product-price">${product.price.toFixed(2)}</p>
                             <button 
                                 className="view-button"

@@ -59,6 +59,7 @@ func GetProducts(ctx *gin.Context) {
 	page := 1
 	sortBy := "created_at"
 	sortOrder := "desc"
+	search := ""
 
 	// Param Parse
 	if limitParam := ctx.Query("limit"); limitParam != "" {
@@ -91,15 +92,27 @@ func GetProducts(ctx *gin.Context) {
 		}
 	}
 
+	if searchParam := ctx.Query("search"); searchParam != "" {
+		search = searchParam
+	}
+
 	offset := (page - 1) * limit
 	orderClause := sortBy + " " + sortOrder
 
 	var products []Product
 	var count int64
 
-	db.Model(&Product{}).Count(&count)
+	query := db.Model(&Product{})
 
-	result := db.Model(&Product{}).Order(orderClause).Limit(limit).Offset(offset).Find(&products)
+	if search != "" {
+		searchTerm := "%" + search + "%"
+		query = query.Where("name ILIKE ?", searchTerm)
+	}
+
+	query.Count(&count)
+
+	result := query.Order(orderClause).Limit(limit).Offset(offset).Find(&products)
+
 	if result.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve products"})
 		return
