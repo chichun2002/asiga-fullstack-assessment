@@ -80,3 +80,6 @@ jobs:
           DB_USER: admin
           DB_PASSWORD: secret
           DB_NAME: products_db
+          # Override the API endpoint for tests to use localhost instead of 'backend'
+          API_HOST: localhost
+          API_PORT: 8080
