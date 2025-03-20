@@ -8,6 +8,7 @@ import ProductReviews from "./ProductReviews";
 interface Product {
     ID: number;
     name: string;
+    description: string;
     price: number;
     CreatedAt: string;
     UpdatedAt: string;
@@ -15,6 +16,7 @@ interface Product {
 
 interface UpdateProductRequest {
     name?: string;
+    description?: string;
     price?: number;
 }
 
@@ -26,6 +28,7 @@ export default function ProductDetail() {
     // Edit product state
     const [showEditForm, setShowEditForm] = useState(false);
     const [editName, setEditName] = useState("");
+    const [editDescription, setEditDescription] = useState("");
     const [editPrice, setEditPrice] = useState("");
     const [editError, setEditError] = useState("");
 
@@ -57,7 +60,7 @@ export default function ProductDetail() {
     const handleEditProduct = (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!editName.trim() && !editPrice.trim()) {
+        if (!editName.trim() && !editPrice.trim() && !editDescription.trim()) {
             setEditError("At least one field must be modified");
             return;
         }
@@ -66,6 +69,10 @@ export default function ProductDetail() {
         
         if (editName.trim()) {
             updateData.name = editName.trim();
+        }
+
+        if (editDescription.trim()) {
+          updateData.description = editDescription.trim();
         }
         
         if (editPrice.trim()) {
@@ -85,6 +92,7 @@ export default function ProductDetail() {
     const handleShowEditForm = useCallback(() => {
         if (product) {
             setEditName(product.name);
+            setEditDescription(product.description);
             setEditPrice(product.price.toString());
             setShowEditForm(true);
         }
@@ -109,6 +117,7 @@ export default function ProductDetail() {
                 {/* Details */}
                 <div className="product-header">
                   <h1>{product.name}</h1>
+                  <h2>{product.description}</h2>
                   <button 
                     className="edit-product-button"
                     onClick={handleShowEditForm}
@@ -138,6 +147,18 @@ export default function ProductDetail() {
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       placeholder="Product name"
+                      disabled={updateProductMutation.isPending}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="product-description">Name</label>
+                    <input
+                      id="product-description"
+                      type="text"
+                      value={editDescription}
+                      onChange={(e) => setEditDescription(e.target.value)}
+                      placeholder="Product description"
                       disabled={updateProductMutation.isPending}
                     />
                   </div>

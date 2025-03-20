@@ -6,12 +6,14 @@ import "./CreateProduct.css";
 
 interface CreateProductRequest {
   name: string;
+  description: string;
   price: number;
 }
 
 export default function CreateProduct() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [error, setError] = useState("");
 
@@ -37,6 +39,11 @@ export default function CreateProduct() {
       setError("Product name is required");
       return;
     }
+
+    if (!description.trim()) {
+      setError("Product description is required");
+      return;
+    }
     
     const numericPrice = parseFloat(price);
     if (isNaN(numericPrice) || numericPrice <= 0) {
@@ -50,6 +57,7 @@ export default function CreateProduct() {
     // Submit the form
     createProductMutation.mutate({
       name: name.trim(),
+      description: description.trim(),
       price: numericPrice
     });
   };
@@ -77,6 +85,18 @@ export default function CreateProduct() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter product name"
+              disabled={createProductMutation.isPending}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description">Product Description</label>
+            <input
+              type="text"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter product description"
               disabled={createProductMutation.isPending}
             />
           </div>

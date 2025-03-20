@@ -13,8 +13,9 @@ var db *gorm.DB
 
 type Product struct {
 	gorm.Model
-	Name  string  `gorm:"not null" json:"name"`
-	Price float64 `gorm:"not null" json:"price"`
+	Name        string  `gorm:"not null" json:"name"`
+	Description string  `gorm:"not null" json:"description"`
+	Price       float64 `gorm:"not null" json:"price"`
 }
 
 type Review struct {

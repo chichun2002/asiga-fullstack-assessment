@@ -8,13 +8,15 @@ import (
 )
 
 type CreateProductRequest struct {
-	Name  string  `json:"name" binding:"required"`
-	Price float64 `json:"price" binding:"required,gt=0"`
+	Name        string  `json:"name" binding:"required"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price" binding:"required,gt=0"`
 }
 
 type UpdateProductRequest struct {
-	Name  *string  `json:"name"`
-	Price *float64 `json:"price"`
+	Name        *string  `json:"name"`
+	Description *string  `json:"description"`
+	Price       *float64 `json:"price"`
 }
 
 // Creates a product assigning it the next avaliable id json body for name and price
@@ -27,8 +29,9 @@ func CreateProduct(ctx *gin.Context) {
 	}
 
 	product := Product{
-		Name:  input.Name,
-		Price: input.Price,
+		Name:        input.Name,
+		Description: input.Description,
+		Price:       input.Price,
 	}
 
 	result := db.Create(&product)
@@ -170,6 +173,9 @@ func UpdateProduct(ctx *gin.Context) {
 
 	if input.Name != nil {
 		updates["name"] = *input.Name
+	}
+	if input.Description != nil {
+		updates["description"] = *input.Description
 	}
 	if input.Price != nil {
 		updates["price"] = *input.Price
