@@ -94,4 +94,4 @@ Having Trouble With Automated Testing in Docker
 - Clean up CSS and separate the frontend into smaller components for readability
 
 ## Dev Comments
-- Working on a fullstack project like this from scratch is quite challenging trying to figure out how to setup all the environments and just getting a basic structure setup to work on. If I could start for scratch making sure testing was integrated and working from the start I would
+- Working on a fullstack project like this from scratch is quite challenging trying to figure out how to setup all the environments and just getting a basic structure setup to work on. If I could start for scratch I would make sure testing was integrated and working from the start
