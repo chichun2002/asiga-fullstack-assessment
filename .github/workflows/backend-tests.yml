@@ -37,10 +37,10 @@ jobs:
         echo "DB_NAME=products_db" >> $GITHUB_ENV
 
     - name: Build backend
-      run: docker-compose build backend
+      run: docker compose build backend
 
     - name: Start backend
-      run: docker-compose up -d backend
+      run: docker compose up -d backend
       env:
         DB_HOST: localhost  # Connect to service's published port
 
@@ -57,4 +57,4 @@ jobs:
         exit 1
 
     - name: Run tests
-      run: docker-compose run --rm backend-tests
+      run: docker compose run --rm backend-tests
