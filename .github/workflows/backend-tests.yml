@@ -50,7 +50,11 @@ jobs:
         run: cd backend && go mod download
       
       - name: Run backend server
-        run: cd backend && go run main.go &
+        run: |
+          cd backend
+          # Start the backend and capture its PID
+          go run main.go &
+          echo "Backend PID: $!"
         env:
           # Add any environment variables needed for the backend
           DB_HOST: localhost
@@ -61,15 +65,11 @@ jobs:
       
       - name: Wait for backend to start
         run: |
-          # Wait for the backend to be ready
-          for i in {1..10}; do
-            if curl -s http://localhost:8080/health > /dev/null; then
-              echo "Backend is up!"
-              break
-            fi
-            echo "Waiting for backend..."
-            sleep 3
-          done
+          # Simple delay to allow the backend to initialize
+          echo "Waiting for backend to initialize..."
+          sleep 10
+          # Check if process is running
+          ps aux | grep -v grep | grep "go run main.go" || echo "Warning: Backend process not found"
       
       - name: Run backend tests
         run: cd backend && go test -v ./... -tags=integration
