@@ -98,12 +98,9 @@ export default function ProductList() {
     const isEmpty = products.length === 0;
 
     return (
-        <div className="product-container">
+        <div>
             <h1>Product List</h1>
-            <button
-                className="create-product-button"
-                onClick={handleCreateProduct}
-            >
+            <button onClick={handleCreateProduct}>
                 + Add New Product
             </button>
 
@@ -135,22 +132,22 @@ export default function ProductList() {
             </form>
 
             {/* Sorting Options */}
-            <div className="sort-controls">
+            <div className="controls">
                 <span>Sort by:</span>
                 <button
-                    className={`sort-button ${sortBy === "name" ? "active" : ""}`}
+                    className={`button ${sortBy === "name" ? "active" : ""}`}
                     onClick={() => handleSortChange("name")}
                 >
                     Name {getSortIcon("name")}
                 </button>
                 <button
-                    className={`sort-button ${sortBy === "price" ? "active" : ""}`}
+                    className={`button ${sortBy === "price" ? "active" : ""}`}
                     onClick={() => handleSortChange("price")}
                 >
                     Price {getSortIcon("price")}
                 </button>
                 <button
-                    className={`sort-button ${sortBy === "created_at" ? "active" : ""}`}
+                    className={`button ${sortBy === "created_at" ? "active" : ""}`}
                     onClick={() => handleSortChange("created_at")}
                 >
                     Date {getSortIcon("created_at")}
@@ -173,7 +170,7 @@ export default function ProductList() {
                             >
                                 X
                             </button>
-                            <p className="product-price">${product.price.toFixed(2)}</p>
+                            <p className="price">${product.price.toFixed(2)}</p>
                             <button 
                                 className="view-button"
                                 onClick={() => handleViewDetails(product.ID)}
@@ -189,7 +186,7 @@ export default function ProductList() {
             
             {/* Pagination controls for products */}
             {data?.pagination && (
-                <div className="pagination-controls">
+                <div className="controls" style={{justifyContent: "center"}}>
                     <button
                         onClick={() => setPage(page => Math.max(page - 1, 1))}
                         disabled={page === 1}

@@ -49,50 +49,6 @@
     border-left: 4px solid #f44336;
   }
   
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-group label {
-    display: block;
-    font-size: 16px;
-    margin-bottom: 8px;
-    color: #ccc;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 12px;
-    background-color: #333;
-    border: 1px solid #444;
-    border-radius: 4px;
-    color: #e0e0e0;
-    font-size: 16px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
-  }
-  
-  .form-group input:focus {
-    outline: none;
-    border-color: #4a90e2;
-  }
-  
-  .form-group input::placeholder {
-    color: #777;
-  }
-  
-  .form-group input:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-  
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-  }
-  
   .cancel-button {
     background-color: transparent;
     color: #ccc;

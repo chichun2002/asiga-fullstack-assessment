@@ -12,39 +12,6 @@
     color: #e0e0e0;
   }
   
-  .sort-controls {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  
-  .sort-controls span {
-    margin-right: 10px;
-    color: #888888;
-  }
-  
-  .sort-button {
-    background-color: #2a2a2a;
-    color: #e0e0e0;
-    border: 1px solid #333333;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .sort-button:hover {
-    background-color: #333333;
-  }
-  
-  .sort-button.active {
-    background-color: #3a7bcf;
-    color: white;
-    border-color: #4a90e2;
-  }
-  
   .product-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);

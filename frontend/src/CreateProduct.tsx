@@ -63,7 +63,7 @@ export default function CreateProduct() {
   };
 
   return (
-    <div className="create-product-container">
+    <div>
       <button 
         className="back-button" 
         onClick={() => navigate('/products')}
@@ -71,7 +71,7 @@ export default function CreateProduct() {
         ← Back to Products
       </button>
       
-      <div className="form-card">
+      <div className="product-detail-card">
         <h1>Create New Product</h1>
         
         {error && <div className="error-message">{error}</div>}

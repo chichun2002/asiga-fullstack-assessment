@@ -103,7 +103,7 @@ export default function ProductDetail() {
     if (!product) return <div>Product not found</div>
 
     return (
-        <div className="product-detail-container">
+        <div>
           <button
             className="back-button"
             onClick={() => navigate('/products')}
@@ -117,7 +117,7 @@ export default function ProductDetail() {
                 {/* Details */}
                 <div className="product-header">
                   <h1>{product.name}</h1>
-                  <h2>{product.description}</h2>
+                  <p>{product.description}</p>
                   <button 
                     className="edit-product-button"
                     onClick={handleShowEditForm}
