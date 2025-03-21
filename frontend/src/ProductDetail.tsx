@@ -152,7 +152,7 @@ export default function ProductDetail() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="product-description">Name</label>
+                    <label htmlFor="product-description">Description</label>
                     <input
                       id="product-description"
                       type="text"
