@@ -61,6 +61,7 @@ This will:
 ### Products
 
 - `GET /products` - List all products (with pagination, filtering and sorting)
+- Example (`/products?page=1&limit=12&sort=price&order=asc&search=`)
 - `GET /products/:id` - Get a specific product
 - `POST /products` - Create a new product
 - `PATCH /products/:id` - Update a product
