@@ -6,24 +6,6 @@
     min-height: 100vh;
   }
   
-  .back-button {
-    background-color: transparent;
-    color: #4a90e2;
-    border: none;
-    padding: 8px 0;
-    margin-bottom: 20px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    transition: color 0.2s;
-  }
-  
-  .back-button:hover {
-    color: #3a7bcf;
-    text-decoration: underline;
-  }
-  
   .form-card {
     background-color: #2a2a2a;
     border-radius: 8px;

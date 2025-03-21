@@ -212,6 +212,25 @@ button:focus-visible {
   color: #e57373;
 }
 
+.back-button {
+  background-color: transparent;
+  color: #4a90e2;
+  border: none;
+  padding: 8px 0;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.back-button:hover {
+  color: #3a7bcf;
+  text-decoration: underline;
+}
+
+
 /* REVIEW CSS */
 
 .reviews-section {
@@ -264,40 +283,40 @@ button:focus-visible {
 }
 
 .reviews-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .add-review-button {
-background-color: #4a90e2;
-color: white;
-border: none;
-padding: 8px 16px;
-border-radius: 4px;
-font-size: 14px;
-cursor: pointer;
-transition: background-color 0.3s;
-display: flex;
-align-items: center;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
 }
 
 .add-review-button:hover {
-background-color: #3a7bcf;
+  background-color: #3a7bcf;
 }
 
 .loading-reviews {
-text-align: center;
-padding: 20px;
-color: #888;
-font-style: italic;
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
 }
 
 .reviews-pagination {
-display: flex;
-justify-content: center;
-align-items: center;
-margin-top: 20px;
-gap: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
 }
